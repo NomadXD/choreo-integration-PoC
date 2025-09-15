@@ -1,0 +1,59 @@
+<data name="CardTokenDB" serviceNamespace="" serviceGroup="" transports="http https"       disableStreaming="true">
+  <description>MYSQL database that stores credit card information</description>
+  <config id="CardTokenDB" >
+    <property name="driverClassName">com.mysql.jdbc.Driver</property>
+    <property name="url">jdbc:mysql://localhost:3306/carddb</property>
+    <property name="username">appuser</property>
+    <property name="password">supersecret</property>
+  </config>
+    <query id="select_all_CardInfo_query" useConfig="CardTokenDB">
+        <sql>SELECT expiryDate, cardholderName, tokenizedCvv, cardNumber FROM CardInfo</sql>
+        <result element="CardInfoCollection" rowName="CardInfo">
+            <element column="expiryDate" name="expiryDate" xsdType="xs:string"/>
+            <element column="cardholderName" name="cardholderName" xsdType="xs:string"/>
+            <element column="tokenizedCvv" name="tokenizedCvv" xsdType="xs:string"/>
+            <element column="cardNumber" name="cardNumber" xsdType="xs:string"/>
+        </result>
+    </query>
+    <resource method="GET" path="CardInfo">
+        <call-query href="select_all_CardInfo_query"/>
+    </resource>
+    <query id="insert_CardInfo_query" useConfig="CardTokenDB"   >
+        <sql>INSERT INTO CardInfo (expiryDate,cardholderName,tokenizedCvv,cardNumber) VALUES (?,?,?,?)</sql>
+        <param name="expiryDate" paramType="SCALAR" sqlType="STRING"  type="IN" ordinal="1" />
+        <param name="cardholderName" paramType="SCALAR" sqlType="STRING"  type="IN" ordinal="2" />
+        <param name="tokenizedCvv" paramType="SCALAR" sqlType="STRING"  type="IN" ordinal="3" />
+        <param name="cardNumber" paramType="SCALAR" sqlType="STRING"  type="IN" ordinal="4" />
+      </query>
+    <resource method="POST" path="CardInfo">
+        <call-query href="insert_CardInfo_query">
+          <with-param name="expiryDate" query-param="expiryDate" />
+          <with-param name="cardholderName" query-param="cardholderName" />
+          <with-param name="tokenizedCvv" query-param="tokenizedCvv" />
+          <with-param name="cardNumber" query-param="cardNumber" />
+        </call-query>
+    </resource>
+    <query id="update_CardInfo_query" useConfig="CardTokenDB">
+        <sql>UPDATE CardInfo SET expiryDate=?, cardholderName=?, tokenizedCvv=? WHERE cardNumber=?</sql>
+        <param name="expiryDate" ordinal="1" paramType="SCALAR" sqlType="STRING" type="IN"/>
+        <param name="cardholderName" ordinal="2" paramType="SCALAR" sqlType="STRING" type="IN"/>
+        <param name="tokenizedCvv" ordinal="3" paramType="SCALAR" sqlType="STRING" type="IN"/>
+        <param name="cardNumber" ordinal="4" paramType="SCALAR" sqlType="STRING" type="IN"/>
+    </query>
+    <resource method="PUT" path="CardInfo">
+        <call-query href="update_CardInfo_query">
+            <with-param name="expiryDate" query-param="expiryDate"/>
+            <with-param name="cardholderName" query-param="cardholderName"/>
+            <with-param name="tokenizedCvv" query-param="tokenizedCvv"/>
+            <with-param name="cardNumber" query-param="cardNumber"/>
+        </call-query>
+    </resource>
+    <query id="delete_CardInfo_query" useConfig="CardTokenDB">
+        <sql>DELETE FROM CardInfo WHERE cardNumber=?</sql>
+        <param name="cardNumber" ordinal="1" paramType="SCALAR" sqlType="STRING" type="IN"/>
+    </query>
+    <resource method="DELETE" path="CardInfo">
+        <call-query href="delete_CardInfo_query">
+            <with-param name="cardNumber" query-param="cardNumber"/>
+        </call-query>
+    </resource></data>
