@@ -1,0 +1,13 @@
+openapi: 3.0.1
+info:
+  title: BookListingAPI
+  description: API Definition of BookListingAPI
+  version: 1.0.0
+servers:
+- url: http://localhost:8290/booklistingapi
+paths:
+  /books:
+    get:
+      responses:
+        default:
+          description: Default response

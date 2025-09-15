@@ -1,0 +1,10 @@
+---
+key: "BookListingAPI-1.0.0"
+name : "BookListingAPI"
+displayName : "BookListingAPI"
+description: "BookListingAPI"
+version: "1.0.0"
+serviceUrl: "https://{MI_HOST}:{MI_PORT}/booklistingapi"
+definitionType: "OAS3"
+securityType: "BASIC"
+mutualSSLEnabled: false

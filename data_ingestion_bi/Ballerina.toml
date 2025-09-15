@@ -1,0 +1,7 @@
+[package]
+org = "lahirudesilva"
+name = "data_ingestion_bi"
+version = "0.1.0"
+
+[build-options]
+sticky = true
