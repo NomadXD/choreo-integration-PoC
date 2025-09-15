@@ -1,2 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<api xmlns="http://ws.apache.org/ns/synapse" name="CardTokenAPI" context="/default" version="1.0.0" version-type="context" publishSwagger="gov:swaggerFiles/CardTokenAPI.yaml"><resource methods="POST" url-mapping="/tokenize"><inSequence><!--This is generated API skeleton.--><!--Business Logic Goes Here--><payloadFactory media-type="json"><format>{"Response" : "Sample Response"}</format><args/></payloadFactory><respond/></inSequence><faultSequence/></resource><resource methods="GET" url-mapping="/search"><inSequence><!--This is generated API skeleton.--><!--Business Logic Goes Here--><payloadFactory media-type="json"><format>{"Response" : "Sample Response"}</format><args/></payloadFactory><respond/></inSequence><faultSequence/></resource></api>
+<api xmlns="http://ws.apache.org/ns/synapse" name="CardTokenAPI" context="/default" version="1.0.0" version-type="context" publishSwagger="gov:swaggerFiles/CardTokenAPI.yaml"><resource methods="POST" url-mapping="/tokenize"><inSequence><log category="INFO" level="full"  description="Log the request"/><script description="Tokenize the CVV" language="js" ><![CDATA[var payload = mc.getPayloadJSON();
+
+// Get the original CVV from the payload
+var originalCvv = payload.cvv;
+
+// Generate a simple, pseudo-random token
+// For a production environment, use a more secure method or an external service
+var token = 'tkn_' + Math.random().toString(36).substring(2, 18);
+
+// Replace the 'cvv' field with the generated token
+payload.cvv = token;
+
+// Log the token for debugging (optional, but good practice)
+mc.getServiceLog().info("Original CVV: " + originalCvv + ", Tokenized CVV: " + token);
+
+// Set the modified payload back to the message context
+mc.setPayloadJSON(payload);]]></script><!--This is generated API skeleton.--><!--Business Logic Goes Here--><payloadFactory  media-type="json" template-type="default">
+    
+    <format>{
+  "cardholderName": "$1",
+  "cardNumber": "$2",
+  "expiryDate": "$3",
+  "tokenizedCvv": "$4"
+}</format>
+    <args>
+        <arg   expression="json-eval($.cardholderName)" evaluator="json"   />
+        <arg   expression="json-eval($.cardNumber)" evaluator="json"   />
+        <arg   expression="json-eval($.expiryDate)" evaluator="json"   />
+        <arg   expression="json-eval($.cvv)" evaluator="json"   />
+    </args>
+</payloadFactory><respond/></inSequence><faultSequence/></resource><resource methods="GET" url-mapping="/search"><inSequence><!--This is generated API skeleton.--><!--Business Logic Goes Here--><payloadFactory media-type="json"><format>{"Response" : "Sample Response"}</format><args/></payloadFactory><respond/></inSequence><faultSequence/></resource></api>

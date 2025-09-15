@@ -4,7 +4,7 @@ info:
   description: API Definition of CardTokenAPI
   version: 1.0.0
 servers:
-- url: http://localhost:8290/cardtokenapi
+- url: http://localhost:8290/default
 paths:
   /tokenize:
     post:
@@ -23,6 +23,11 @@ paths:
               xml:
                 name: payload
         required: false
+      responses:
+        default:
+          description: Default response
+  /search:
+    get:
       responses:
         default:
           description: Default response
