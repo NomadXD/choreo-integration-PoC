@@ -1,0 +1,59 @@
+<data name="IncidentDatabase" serviceNamespace="" serviceGroup="" transports="http https"       disableStreaming="true">
+  <description>Data service for database operations to Incident database</description>
+  <config id="IncidentDatabase" >
+    <property name="driverClassName">com.mysql.jdbc.Driver</property>
+    <property name="url">jdbc:mysql://localhost:3306/incidentdb</property>
+    <property name="username">root</property>
+    <property name="password">supersecret</property>
+  </config><query id="select_all_incidents_query" useConfig="IncidentDatabase">
+        <sql>SELECT issue, customer_email, customer_name, ticket_id FROM incidents</sql>
+        <result element="incidentsCollection" rowName="incidents">
+            <element column="issue" name="issue" xsdType="xs:string"/>
+            <element column="customer_email" name="customer_email" xsdType="xs:string"/>
+            <element column="customer_name" name="customer_name" xsdType="xs:string"/>
+            <element column="ticket_id" name="ticket_id" xsdType="xs:string"/>
+        </result>
+    </query>
+    <resource method="GET" path="incidents">
+        <call-query href="select_all_incidents_query"/>
+    </resource>
+    <query id="insert_incidents_query" useConfig="IncidentDatabase">
+        <sql>INSERT INTO incidents (issue,customer_email,customer_name,ticket_id) VALUES (?,?,?,?)</sql>
+        <param name="issue" ordinal="1" paramType="SCALAR" sqlType="STRING" type="IN"/>
+        <param name="customer_email" ordinal="2" paramType="SCALAR" sqlType="STRING" type="IN"/>
+        <param name="customer_name" ordinal="3" paramType="SCALAR" sqlType="STRING" type="IN"/>
+        <param name="ticket_id" ordinal="4" paramType="SCALAR" sqlType="STRING" type="IN"/>
+    </query>
+    <resource method="POST" path="incidents">
+        <call-query href="insert_incidents_query">
+            <with-param name="issue" query-param="issue"/>
+            <with-param name="customer_email" query-param="customer_email"/>
+            <with-param name="customer_name" query-param="customer_name"/>
+            <with-param name="ticket_id" query-param="ticket_id"/>
+        </call-query>
+    </resource>
+    <query id="update_incidents_query" useConfig="IncidentDatabase">
+        <sql>UPDATE incidents SET issue=?, customer_email=?, customer_name=? WHERE ticket_id=?</sql>
+        <param name="issue" ordinal="1" paramType="SCALAR" sqlType="STRING" type="IN"/>
+        <param name="customer_email" ordinal="2" paramType="SCALAR" sqlType="STRING" type="IN"/>
+        <param name="customer_name" ordinal="3" paramType="SCALAR" sqlType="STRING" type="IN"/>
+        <param name="ticket_id" ordinal="4" paramType="SCALAR" sqlType="STRING" type="IN"/>
+    </query>
+    <resource method="PUT" path="incidents">
+        <call-query href="update_incidents_query">
+            <with-param name="issue" query-param="issue"/>
+            <with-param name="customer_email" query-param="customer_email"/>
+            <with-param name="customer_name" query-param="customer_name"/>
+            <with-param name="ticket_id" query-param="ticket_id"/>
+        </call-query>
+    </resource>
+    <query id="delete_incidents_query" useConfig="IncidentDatabase">
+        <sql>DELETE FROM incidents WHERE ticket_id=?</sql>
+        <param name="ticket_id" ordinal="1" paramType="SCALAR" sqlType="STRING" type="IN"/>
+    </query>
+    <resource method="DELETE" path="incidents">
+        <call-query href="delete_incidents_query">
+            <with-param name="ticket_id" query-param="ticket_id"/>
+        </call-query>
+    </resource>
+</data>

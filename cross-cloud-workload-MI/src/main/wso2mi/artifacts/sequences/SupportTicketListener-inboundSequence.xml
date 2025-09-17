@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="SupportTicketListener-inboundSequence" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
+
+<log category="INFO" level="full"  description="Log the event received from rabbitmq"/><dataServiceCall description="Call Incident Dataservice to persist incident" serviceName="IncidentDatabase">
+        <operations type="single">
+            <operation name="insert_incidents_query">
+                <param name="issue"  expression="json-eval($.issue)" />
+                <param name="customer_email"  expression="json-eval($.customer_email)" />
+                <param name="customer_name"  expression="json-eval($.customer_name)" />
+                <param name="ticket_id"  expression="json-eval($.ticket_id)" />
+            </operation>
+        </operations>
+        <source type="inline"/>
+        <target type="body"/>
+    </dataServiceCall></sequence>
