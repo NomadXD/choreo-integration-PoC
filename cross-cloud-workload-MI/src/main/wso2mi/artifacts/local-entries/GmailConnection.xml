@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<localEntry key="GmailConnection" xmlns="http://ws.apache.org/ns/synapse">
+  <email.init>
+    <connectionType>SMTPS</connectionType>
+    <host>smtp.gmail.com</host>
+    <port>465</port>
+    <username>lahirude@wso2.com</username>
+    <password>xxxx xxxx xxxx xxxx</password>
+    <name>GmailConnection</name>
+  </email.init>
+</localEntry>

@@ -5,17 +5,13 @@
 
     <property name="messageType" scope="axis2" value="application/json"/>
 
-    <!-- <property name="issue_prop" expression="json-eval($.issue)"/>
     <property name="customer_email_prop" expression="json-eval($.customer_email)"/>
-    <property name="customer_name_prop" expression="json-eval($.customer_name)"/>
     <property name="ticket_id_prop" expression="json-eval($.ticket_id)"/>
+    <property name="customer_name_prop" expression="json-eval($.customer_name)"/>
+    <property name="issue_prop" expression="json-eval($.issue)"/>
 
-    <log level="custom">
-        <property name="Message_Context_Issue" expression="$ctx:issue_prop"/>
-        <property name="Message_Context_Customer_Email" expression="$ctx:customer_email_prop"/>
-        <property name="Message_Context_Customer_Name" expression="$ctx:customer_name_prop"/>
-        <property name="Message_Context_Ticket_ID" expression="$ctx:ticket_id_prop"/>
-    </log> -->
+    <property name="subject" expression="concat('Your Support Ticket Has Been Created – Ticket ID: ', get-property('ticket_id_prop'))"/>
+    <property name="content" expression="concat('Dear ', get-property('customer_name_prop'), ',&lt;br&gt;&lt;br&gt;Thank you for contacting ACME Corp Support. Your support ticket (&lt;b&gt;', get-property('ticket_id_prop'), '&lt;/b&gt;) has been created regarding the following issue:&lt;br&gt;&lt;i&gt;', get-property('issue_prop'), '&lt;/i&gt;&lt;br&gt;&lt;br&gt;Our support team will review your request and get back to you as soon as possible.&lt;br&gt;&lt;br&gt;Best regards,&lt;br&gt;ACME Corp Support Team')"/>
 
     <dataServiceCall description="Call Incident Dataservice to persist incident" serviceName="IncidentDatabase">
         <operations type="single">
@@ -24,14 +20,25 @@
                 <param name="customer_email" expression="json-eval($.customer_email)" evaluator="json"/>
                 <param name="customer_name" expression="json-eval($.customer_name)" evaluator="json"/>
                 <param name="ticket_id" expression="json-eval($.ticket_id)" evaluator="json"/>
-                <!-- <param name="issue" value="Cannot reset password"/>
-                <param name="customer_email" value="john.doe@example.com"/>
-                <param name="customer_name" value="John Doe"/>
-                <param name="ticket_id" value="TICKET-12345"/> -->
             </operation>
         </operations>
         <source type="inline"/>
         <target type="body"/>
     </dataServiceCall>
     
+<email.send configKey="GmailConnection">
+    <from >lahirude@wso2.com</from>
+    <personalName >ACME Corp Support</personalName>
+    <to >{$ctx:customer_email_prop}</to>
+    <cc ></cc>
+    <bcc ></bcc>
+    <replyTo >lahirude@wso2.com</replyTo>
+    <subject>{$ctx:subject}</subject>
+    <content >{$ctx:content}</content>
+    <contentType >text/html</contentType>
+    <encoding >UTF-8</encoding>
+    <attachments ></attachments>
+    <inlineImages >[]</inlineImages>
+    <contentTransferEncoding >Base64</contentTransferEncoding>
+</email.send>
 </sequence>

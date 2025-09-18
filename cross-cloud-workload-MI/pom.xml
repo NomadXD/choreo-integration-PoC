@@ -403,6 +403,19 @@
     <test.server.version>${project.runtime.version}</test.server.version>
     <testServerDownloadLink></testServerDownloadLink>
     <maven.test.skip>false</maven.test.skip>
-  </properties>
+  </properties><dependencies>
+    <dependency>
+        <groupId>org.wso2.integration.connector</groupId>
+        <artifactId>mi-connector-email</artifactId>
+        <version>1.1.4</version>
+        <type>zip</type>
+        <exclusions>
+            <exclusion>
+                <groupId>*</groupId>
+                <artifactId>*</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
+</dependencies>
   
 </project>
