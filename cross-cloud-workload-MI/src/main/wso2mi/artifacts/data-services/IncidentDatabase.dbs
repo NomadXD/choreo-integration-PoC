@@ -2,9 +2,9 @@
   <description>Data service for database operations to Incident database</description>
   <config id="IncidentDatabase" >
     <property name="driverClassName">com.mysql.jdbc.Driver</property>
-    <property name="url">jdbc:mysql://localhost:3306/incidentdb</property>
-    <property name="username">root</property>
-    <property name="password">supersecret</property>
+    <property name="url">$FILE:dbUrl</property>
+    <property name="username">$FILE:dbUsername</property>
+    <property name="password">$FILE:dbPassword</property>
   </config><query id="select_all_incidents_query" useConfig="IncidentDatabase">
         <sql>SELECT issue, customer_email, customer_name, ticket_id FROM incidents</sql>
         <result element="incidentsCollection" rowName="incidents">
