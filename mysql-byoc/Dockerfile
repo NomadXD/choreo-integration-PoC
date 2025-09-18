@@ -12,3 +12,6 @@ EXPOSE 3306
 # Optional: Add custom configuration or initialization scripts
 # COPY ./my.cnf /etc/mysql/my.cnf
 COPY ./init.sql /docker-entrypoint-initdb.d/
+
+USER 10014
+
