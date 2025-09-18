@@ -32,6 +32,14 @@
             <with-param name="ticket_id" query-param="ticket_id"/>
         </call-query>
     </resource>
+    <operation name="insertIncident" returnRequestStatus="true">
+      <call-query href="insert_incidents_query">
+            <with-param name="issue" query-param="issue"/>
+            <with-param name="customer_email" query-param="customer_email"/>
+            <with-param name="customer_name" query-param="customer_name"/>
+            <with-param name="ticket_id" query-param="ticket_id"/>
+        </call-query>
+   </operation>
     <query id="update_incidents_query" useConfig="IncidentDatabase">
         <sql>UPDATE incidents SET issue=?, customer_email=?, customer_name=? WHERE ticket_id=?</sql>
         <param name="issue" ordinal="1" paramType="SCALAR" sqlType="STRING" type="IN"/>

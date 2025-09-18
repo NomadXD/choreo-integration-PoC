@@ -1,15 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sequence name="SupportTicketListener-inboundSequence" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
 
-<log category="INFO" level="full"  description="Log the event received from rabbitmq"/><dataServiceCall description="Call Incident Dataservice to persist incident" serviceName="IncidentDatabase">
+    <log category="INFO" level="full"  description="Log the event received from rabbitmq"/>
+
+    <property name="messageType" scope="axis2" value="application/json"/>
+
+    <!-- <property name="issue_prop" expression="json-eval($.issue)"/>
+    <property name="customer_email_prop" expression="json-eval($.customer_email)"/>
+    <property name="customer_name_prop" expression="json-eval($.customer_name)"/>
+    <property name="ticket_id_prop" expression="json-eval($.ticket_id)"/>
+
+    <log level="custom">
+        <property name="Message_Context_Issue" expression="$ctx:issue_prop"/>
+        <property name="Message_Context_Customer_Email" expression="$ctx:customer_email_prop"/>
+        <property name="Message_Context_Customer_Name" expression="$ctx:customer_name_prop"/>
+        <property name="Message_Context_Ticket_ID" expression="$ctx:ticket_id_prop"/>
+    </log> -->
+
+    <dataServiceCall description="Call Incident Dataservice to persist incident" serviceName="IncidentDatabase">
         <operations type="single">
-            <operation name="insert_incidents_query">
-                <param name="issue"  expression="json-eval($.issue)" />
-                <param name="customer_email"  expression="json-eval($.customer_email)" />
-                <param name="customer_name"  expression="json-eval($.customer_name)" />
-                <param name="ticket_id"  expression="json-eval($.ticket_id)" />
+            <operation name="insertIncident">
+                <param name="issue" expression="json-eval($.issue)" evaluator="json"/>
+                <param name="customer_email" expression="json-eval($.customer_email)" evaluator="json"/>
+                <param name="customer_name" expression="json-eval($.customer_name)" evaluator="json"/>
+                <param name="ticket_id" expression="json-eval($.ticket_id)" evaluator="json"/>
+                <!-- <param name="issue" value="Cannot reset password"/>
+                <param name="customer_email" value="john.doe@example.com"/>
+                <param name="customer_name" value="John Doe"/>
+                <param name="ticket_id" value="TICKET-12345"/> -->
             </operation>
         </operations>
         <source type="inline"/>
         <target type="body"/>
-    </dataServiceCall></sequence>
+    </dataServiceCall>
+    
+</sequence>
