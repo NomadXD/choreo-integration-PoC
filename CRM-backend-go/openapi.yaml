@@ -1,0 +1,190 @@
+openapi: 3.1.0
+info:
+  title: CRM Ticket Service API
+  description: A simple Go service for managing customer support tickets with RabbitMQ integration
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@example.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+  - url: https://api.example.com
+    description: Production server
+
+paths:
+  /ticket:
+    post:
+      summary: Create a new support ticket
+      description: Creates a new customer support ticket and queues it for processing via RabbitMQ
+      operationId: createTicket
+      tags:
+        - Tickets
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TicketRequest'
+            examples:
+              password_reset:
+                summary: Password reset ticket
+                value:
+                  ticket_id: "INC-33"
+                  customer_name: "Jane Doe"
+                  customer_email: "lahiru97udayanga@gmail.com"
+                  issue: "Cannot reset password."
+              login_issue:
+                summary: Login issue ticket
+                value:
+                  ticket_id: "INC-34"
+                  customer_name: "John Smith"
+                  customer_email: "john.smith@example.com"
+                  issue: "Unable to login to account after password change."
+      responses:
+        '200':
+          description: Ticket created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketResponse'
+              examples:
+                success:
+                  summary: Successful ticket creation
+                  value:
+                    success: true
+                    message: "Ticket created and queued for processing"
+                    ticketId: "INC-33"
+        '400':
+          description: Bad request - Invalid payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalid_email:
+                  summary: Invalid email format
+                  value:
+                    success: false
+                    message: "Invalid request payload: Key: 'Ticket.CustomerEmail' Error:Field validation for 'CustomerEmail' failed on the 'email' tag"
+                missing_field:
+                  summary: Missing required field
+                  value:
+                    success: false
+                    message: "Invalid request payload: Key: 'Ticket.TicketID' Error:Field validation for 'TicketID' failed on the 'required' tag"
+        '500':
+          description: Internal server error - Failed to process ticket
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                rabbitmq_error:
+                  summary: RabbitMQ connection error
+                  value:
+                    success: false
+                    message: "Failed to process ticket: RabbitMQ connection failed"
+
+  /health:
+    get:
+      summary: Health check endpoint
+      description: Returns the health status of the service
+      operationId: healthCheck
+      tags:
+        - Health
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "healthy"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2025-09-19T10:30:00Z"
+
+components:
+  schemas:
+    TicketRequest:
+      type: object
+      required:
+        - ticket_id
+        - customer_name
+        - customer_email
+        - issue
+      properties:
+        ticket_id:
+          type: string
+          description: Unique identifier for the ticket
+          example: "INC-33"
+          pattern: '^[A-Z]+-\d+$'
+        customer_name:
+          type: string
+          description: Name of the customer reporting the issue
+          example: "Jane Doe"
+          minLength: 1
+          maxLength: 100
+        customer_email:
+          type: string
+          format: email
+          description: Email address of the customer
+          example: "lahiru97udayanga@gmail.com"
+        issue:
+          type: string
+          description: Description of the customer's issue
+          example: "Cannot reset password."
+          minLength: 1
+          maxLength: 1000
+
+    TicketResponse:
+      type: object
+      required:
+        - success
+        - message
+      properties:
+        success:
+          type: boolean
+          description: Indicates if the ticket was created successfully
+          example: true
+        message:
+          type: string
+          description: Human-readable message describing the result
+          example: "Ticket created and queued for processing"
+        ticketId:
+          type: string
+          description: The ID of the created ticket (only present on success)
+          example: "INC-33"
+
+    ErrorResponse:
+      type: object
+      required:
+        - success
+        - message
+      properties:
+        success:
+          type: boolean
+          description: Always false for error responses
+          example: false
+        message:
+          type: string
+          description: Error message describing what went wrong
+          example: "Invalid request payload"
+
+tags:
+  - name: Tickets
+    description: Operations related to customer support tickets
+  - name: Health
+    description: Service health monitoring endpoints
+
+externalDocs:
+  description: Find more info about this service
+  url: https://github.com/your-org/crm-backend-go
