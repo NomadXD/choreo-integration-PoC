@@ -5,7 +5,7 @@
     <host>smtp.gmail.com</host>
     <port>465</port>
     <username>lahirude@wso2.com</username>
-    <password>xxxx xxxx xxxx xxxx</password>
+    <password>{get-property('file','smtpPassword')}</password>
     <name>GmailConnection</name>
   </email.init>
 </localEntry>

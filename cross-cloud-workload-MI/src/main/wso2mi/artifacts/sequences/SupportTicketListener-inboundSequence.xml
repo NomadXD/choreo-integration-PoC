@@ -27,12 +27,12 @@
     </dataServiceCall>
     
 <email.send configKey="GmailConnection">
-    <from >lahirude@wso2.com</from>
+    <from >{get-property('file','fromUserName')}</from>
     <personalName >ACME Corp Support</personalName>
     <to >{$ctx:customer_email_prop}</to>
     <cc ></cc>
     <bcc ></bcc>
-    <replyTo >lahirude@wso2.com</replyTo>
+    <replyTo >{get-property('file','fromUserName')}</replyTo>
     <subject>{$ctx:subject}</subject>
     <content >{$ctx:content}</content>
     <contentType >text/html</contentType>
