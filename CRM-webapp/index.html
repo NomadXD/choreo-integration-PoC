@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Support Ticket System</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Support Ticket System</h1>
+        <p>Create a new support ticket</p>
+      </header>
+
+      <main>
+        <form id="ticketForm" class="ticket-form">
+          <div class="form-group">
+            <label for="ticketId">Ticket ID:</label>
+            <input
+              type="text"
+              id="ticketId"
+              name="ticket_id"
+              required
+              placeholder="e.g., INC-69"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="customerName">Customer Name:</label>
+            <input
+              type="text"
+              id="customerName"
+              name="customer_name"
+              required
+              placeholder="Enter customer name"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="customerEmail">Customer Email:</label>
+            <input
+              type="email"
+              id="customerEmail"
+              name="customer_email"
+              required
+              placeholder="customer@example.com"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="issue">Issue Description:</label>
+            <textarea
+              id="issue"
+              name="issue"
+              required
+              placeholder="Describe the issue in detail..."
+              rows="4"
+            ></textarea>
+          </div>
+
+          <button type="submit" id="submitBtn" class="submit-btn">
+            <span class="btn-text">Create Ticket</span>
+            <span class="btn-spinner" style="display: none">Creating...</span>
+          </button>
+        </form>
+
+        <div id="message" class="message" style="display: none"></div>
+      </main>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
