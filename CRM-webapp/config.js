@@ -4,7 +4,7 @@
 const CONFIG = {
   // Backend API endpoint for creating support tickets
   BACKEND_URL:
-    "https://56792605-ed4d-4cc1-95a1-fbad23a01bff-dev.e1-us-east-azure.preview-dv.choreoapis.dev/pldr/crm-backend-go/v1.0/ticket",
+    "https://b48cc93e-fa33-4420-a155-bc653b4d46be-my-env.e1-us-east-azure.choreoapis.dev/aaa-poc/crm-backend/v1.0/ticket",
 
   // Request timeout in milliseconds
   REQUEST_TIMEOUT: 30000,
