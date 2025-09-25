@@ -51,11 +51,47 @@ func main() {
 	// Define routes
 	router.POST("/ticket", ticketHandler.CreateTicket)
 
-	// Health check endpoint
+	// Health check endpoint with RabbitMQ connectivity check
 	router.GET("/health", func(c *gin.Context) {
-		c.JSON(200, gin.H{
+		response := gin.H{
 			"status":  "ok",
 			"message": "CRM Backend Service is running",
+		}
+
+		// Check RabbitMQ connectivity
+		if err := rabbitMQClient.HealthCheck(); err != nil {
+			response["status"] = "degraded"
+			response["message"] = "Service is running but RabbitMQ is not healthy"
+			response["rabbitmq_error"] = err.Error()
+			c.JSON(503, response) // Service Unavailable
+			return
+		}
+
+		response["rabbitmq"] = "connected"
+		c.JSON(200, response)
+	})
+
+	// Readiness probe endpoint for Kubernetes
+	router.GET("/ready", func(c *gin.Context) {
+		if !rabbitMQClient.IsConnected() {
+			c.JSON(503, gin.H{
+				"ready":   false,
+				"message": "Service not ready - RabbitMQ disconnected",
+			})
+			return
+		}
+
+		c.JSON(200, gin.H{
+			"ready":   true,
+			"message": "Service is ready",
+		})
+	})
+
+	// Liveness probe endpoint for Kubernetes
+	router.GET("/live", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"alive":   true,
+			"message": "Service is alive",
 		})
 	})
 
