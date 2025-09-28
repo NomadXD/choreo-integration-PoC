@@ -1,0 +1,98 @@
+<data name="SupportTicketDatabase" serviceNamespace="" serviceGroup="" transports="http https"       disableStreaming="true">
+  <description>Handle data operations related to support tickets</description>
+  <config id="SupportTicket" >
+    <property name="driverClassName">com.mysql.jdbc.Driver</property>
+    <property name="url">$FILE:dbUrl</property>
+    <property name="username">$FILE:dbUsername</property>
+    <property name="password">$FILE:dbPassword</property>
+  </config><query id="select_all_support_tickets_query" useConfig="SupportTicket">
+        <sql>SELECT account_type, contact_name, account_website, issue, account_name, account_phone, created_at, account_industry, ticket_id, contact_email FROM support_tickets</sql>
+        <result element="support_ticketsCollection" rowName="support_tickets">
+            <element column="account_type" name="account_type" xsdType="xs:string"/>
+            <element column="contact_name" name="contact_name" xsdType="xs:string"/>
+            <element column="account_website" name="account_website" xsdType="xs:string"/>
+            <element column="issue" name="issue" xsdType="xs:string"/>
+            <element column="account_name" name="account_name" xsdType="xs:string"/>
+            <element column="account_phone" name="account_phone" xsdType="xs:string"/>
+            <element column="created_at" name="created_at" xsdType="xs:timestamp"/>
+            <element column="account_industry" name="account_industry" xsdType="xs:string"/>
+            <element column="ticket_id" name="ticket_id" xsdType="xs:string"/>
+            <element column="contact_email" name="contact_email" xsdType="xs:string"/>
+        </result>
+    </query>
+    <resource method="GET" path="support_tickets">
+        <call-query href="select_all_support_tickets_query"/>
+    </resource>
+    <query id="insert_support_tickets_query" useConfig="SupportTicket">
+        <sql>INSERT INTO support_tickets (account_type,contact_name,account_website,issue,account_name,account_phone,account_industry,ticket_id,contact_email) VALUES (?,?,?,?,?,?,?,?,?)</sql>
+        <param name="account_type" ordinal="1" paramType="SCALAR" sqlType="STRING" type="IN"/>
+        <param name="contact_name" ordinal="2" paramType="SCALAR" sqlType="STRING" type="IN"/>
+        <param name="account_website" ordinal="3" paramType="SCALAR" sqlType="STRING" type="IN"/>
+        <param name="issue" ordinal="4" paramType="SCALAR" sqlType="STRING" type="IN"/>
+        <param name="account_name" ordinal="5" paramType="SCALAR" sqlType="STRING" type="IN"/>
+        <param name="account_phone" ordinal="6" paramType="SCALAR" sqlType="STRING" type="IN"/>
+        <param name="account_industry" ordinal="7" paramType="SCALAR" sqlType="STRING" type="IN"/>
+        <param name="ticket_id" ordinal="8" paramType="SCALAR" sqlType="STRING" type="IN"/>
+        <param name="contact_email" ordinal="9" paramType="SCALAR" sqlType="STRING" type="IN"/>
+    </query>
+    <resource method="POST" path="support_tickets">
+        <call-query href="insert_support_tickets_query">
+            <with-param name="account_type" query-param="account_type"/>
+            <with-param name="contact_name" query-param="contact_name"/>
+            <with-param name="account_website" query-param="account_website"/>
+            <with-param name="issue" query-param="issue"/>
+            <with-param name="account_name" query-param="account_name"/>
+            <with-param name="account_phone" query-param="account_phone"/>
+            <with-param name="account_industry" query-param="account_industry"/>
+            <with-param name="ticket_id" query-param="ticket_id"/>
+            <with-param name="contact_email" query-param="contact_email"/>
+        </call-query>
+    </resource>
+    <operation name="insertSupportTicket" returnRequestStatus="true">
+      <call-query href="insert_support_tickets_query">
+            <with-param name="account_type" query-param="account_type"/>
+            <with-param name="contact_name" query-param="contact_name"/>
+            <with-param name="account_website" query-param="account_website"/>
+            <with-param name="issue" query-param="issue"/>
+            <with-param name="account_name" query-param="account_name"/>
+            <with-param name="account_phone" query-param="account_phone"/>
+            <with-param name="account_industry" query-param="account_industry"/>
+            <with-param name="ticket_id" query-param="ticket_id"/>
+            <with-param name="contact_email" query-param="contact_email"/>
+        </call-query>
+   </operation>
+    <query id="update_support_tickets_query" useConfig="SupportTicket">
+        <sql>UPDATE support_tickets SET account_type=?, contact_name=?, account_website=?, issue=?, account_name=?, account_phone=?, account_industry=?, contact_email=? WHERE ticket_id=?</sql>
+        <param name="account_type" ordinal="1" paramType="SCALAR" sqlType="STRING" type="IN"/>
+        <param name="contact_name" ordinal="2" paramType="SCALAR" sqlType="STRING" type="IN"/>
+        <param name="account_website" ordinal="3" paramType="SCALAR" sqlType="STRING" type="IN"/>
+        <param name="issue" ordinal="4" paramType="SCALAR" sqlType="STRING" type="IN"/>
+        <param name="account_name" ordinal="5" paramType="SCALAR" sqlType="STRING" type="IN"/>
+        <param name="account_phone" ordinal="6" paramType="SCALAR" sqlType="STRING" type="IN"/>
+        <param name="account_industry" ordinal="7" paramType="SCALAR" sqlType="STRING" type="IN"/>
+        <param name="contact_email" ordinal="8" paramType="SCALAR" sqlType="STRING" type="IN"/>
+        <param name="ticket_id" ordinal="9" paramType="SCALAR" sqlType="STRING" type="IN"/>
+    </query>
+    <resource method="PUT" path="support_tickets">
+        <call-query href="update_support_tickets_query">
+            <with-param name="account_type" query-param="account_type"/>
+            <with-param name="contact_name" query-param="contact_name"/>
+            <with-param name="account_website" query-param="account_website"/>
+            <with-param name="issue" query-param="issue"/>
+            <with-param name="account_name" query-param="account_name"/>
+            <with-param name="account_phone" query-param="account_phone"/>
+            <with-param name="account_industry" query-param="account_industry"/>
+            <with-param name="contact_email" query-param="contact_email"/>
+            <with-param name="ticket_id" query-param="ticket_id"/>
+        </call-query>
+    </resource>
+    <query id="delete_support_tickets_query" useConfig="SupportTicket">
+        <sql>DELETE FROM support_tickets WHERE ticket_id=?</sql>
+        <param name="ticket_id" ordinal="1" paramType="SCALAR" sqlType="STRING" type="IN"/>
+    </query>
+    <resource method="DELETE" path="support_tickets">
+        <call-query href="delete_support_tickets_query">
+            <with-param name="ticket_id" query-param="ticket_id"/>
+        </call-query>
+    </resource>
+</data>

@@ -4,6 +4,8 @@
     
     <!-- Extract customer email from payload -->
     <property name="customer_email" expression="json-eval($.customer_email)" scope="default" type="STRING"/>
+    <property name="ticket_id" expression="json-eval($.ticket_id)" scope="default" type="STRING"/>
+    <property name="issue" expression="json-eval($.issue)" scope="default" type="STRING"/>
     
     <!-- Log extracted email -->
     <log category="INFO" level="custom">
@@ -47,5 +49,23 @@
         <property name="Contact_Name" expression="get-property('contact_name')"/>
         <property name="Contact_Email" expression="get-property('contact_email')"/>
     </log>
+
+    <dataServiceCall description="Call Support Ticket Dataservice to persist tickets" serviceName="SupportTicketDatabase">
+        <operations type="single">
+            <operation name="insertSupportTicket">
+                <param name="account_type" expression="get-property('account_type')"/>
+                <param name="contact_name" expression="get-property('contact_name')"/>
+                <param name="account_website" expression="get-property('account_website')"/>
+                <param name="issue" expression="get-property('issue')"/>
+                <param name="account_name" expression="get-property('account_name')"/>
+                <param name="account_phone" expression="get-property('account_phone')"/>
+                <param name="account_industry" expression="get-property('account_industry')"/>
+                <param name="contact_email" expression="get-property('contact_email')"/>
+                <param name="ticket_id" expression="get-property('ticket_id')"/>
+            </operation>
+        </operations>
+        <source type="inline"/>
+        <target type="body"/>
+    </dataServiceCall>
     
 </sequence>
