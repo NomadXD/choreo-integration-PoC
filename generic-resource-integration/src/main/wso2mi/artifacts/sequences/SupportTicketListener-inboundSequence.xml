@@ -10,12 +10,42 @@
         <property name="extracted_email" expression="get-property('customer_email')"/>
     </log>
     
-    <!-- Execute Salesforce query with dynamic email -->
+    <!-- Build SOQL query using concat with proper single quotes for SOQL -->
+    <property name="soql_query" expression="concat(&quot;SELECT Id, Name, Type, Website, Phone, Industry, (SELECT Id, Name, Email FROM Contacts WHERE Email = '&quot;, get-property('customer_email'), &quot;') FROM Account WHERE Id IN (SELECT AccountId FROM Contact WHERE Email = '&quot;, get-property('customer_email'), &quot;')&quot;)"/>
     
+    <!-- Log the constructed query -->
+    <log category="INFO" level="custom">
+        <property name="constructed_query" expression="get-property('soql_query')"/>
+    </log>
+    
+    <!-- Execute Salesforce query with dynamic email filter -->
     <salesforcerest.query configKey="Salesforce">
-    <queryString >select id, name from Account</queryString>
-</salesforcerest.query>
-<!-- Log the response -->
-    <log category="INFO" level="full" description="Salesforce query response"/>
+        <queryString>{get-property('soql_query')}</queryString>
+    </salesforcerest.query>
+
+    <!-- Log the response -->
+    <log category="INFO" level="full" description="Salesforce query response for specific account"/>
+    
+    <!-- Extract and set properties for account details -->
+    <property name="account_name" expression="json-eval($.records[0].Name)" scope="default" type="STRING"/>
+    <property name="account_type" expression="json-eval($.records[0].Type)" scope="default" type="STRING"/>
+    <property name="account_website" expression="json-eval($.records[0].Website)" scope="default" type="STRING"/>
+    <property name="account_phone" expression="json-eval($.records[0].Phone)" scope="default" type="STRING"/>
+    <property name="account_industry" expression="json-eval($.records[0].Industry)" scope="default" type="STRING"/>
+    
+    <!-- Extract contact details -->
+    <property name="contact_name" expression="json-eval($.records[0].Contacts.records[0].Name)" scope="default" type="STRING"/>
+    <property name="contact_email" expression="json-eval($.records[0].Contacts.records[0].Email)" scope="default" type="STRING"/>
+    
+    <!-- Log extracted account and contact information -->
+    <log category="INFO" level="custom">
+        <property name="Account_Name" expression="get-property('account_name')"/>
+        <property name="Account_Type" expression="get-property('account_type')"/>
+        <property name="Account_Website" expression="get-property('account_website')"/>
+        <property name="Account_Phone" expression="get-property('account_phone')"/>
+        <property name="Account_Industry" expression="get-property('account_industry')"/>
+        <property name="Contact_Name" expression="get-property('contact_name')"/>
+        <property name="Contact_Email" expression="get-property('contact_email')"/>
+    </log>
     
 </sequence>
