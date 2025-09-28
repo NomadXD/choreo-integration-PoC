@@ -405,6 +405,17 @@
     <maven.test.skip>false</maven.test.skip>
   </properties><dependencies><dependency>
     <groupId>org.wso2.integration.connector</groupId>
+    <artifactId>mi-connector-email</artifactId>
+    <version>1.1.4</version>
+    <type>zip</type>
+    <exclusions>
+        <exclusion>
+            <groupId>*</groupId>
+            <artifactId>*</artifactId>
+        </exclusion>
+    </exclusions>
+</dependency><dependency>
+    <groupId>org.wso2.integration.connector</groupId>
     <artifactId>mi-connector-salesforcerest</artifactId>
     <version>2.0.1</version>
     <type>zip</type>
