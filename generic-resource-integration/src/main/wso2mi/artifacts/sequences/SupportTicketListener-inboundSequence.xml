@@ -6,11 +6,18 @@
     <property name="customer_email" expression="json-eval($.customer_email)" scope="default" type="STRING"/>
     <property name="ticket_id" expression="json-eval($.ticket_id)" scope="default" type="STRING"/>
     <property name="issue" expression="json-eval($.issue)" scope="default" type="STRING"/>
+    <property name="customer_name" expression="json-eval($.customer_name)" scope="default" type="STRING"/>
+
     
     <!-- Log extracted email -->
     <log category="INFO" level="custom">
         <property name="extracted_email" expression="get-property('customer_email')"/>
     </log>
+
+    <!-- Set email subject and content -->
+    <property name="subject" expression="concat('Your Support Ticket Has Been Created – Ticket ID: ', get-property('ticket_id'))"/>
+    <property name="content" expression="concat('Dear ', get-property('customer_name'), ',&lt;br&gt;&lt;br&gt;Thank you for contacting Nexus Store Support. Your support ticket (&lt;b&gt;', get-property('ticket_id'), '&lt;/b&gt;) has been created regarding the following issue:&lt;br&gt;&lt;i&gt;', get-property('issue'), '&lt;/i&gt;&lt;br&gt;&lt;br&gt;Our support team will review your request and get back to you as soon as possible.&lt;br&gt;&lt;br&gt;Best regards,&lt;br&gt;Nexus Store Support Team')"/>
+
     
     <!-- Build SOQL query using concat with proper single quotes for SOQL -->
     <property name="soql_query" expression="concat(&quot;SELECT Id, Name, Type, Website, Phone, Industry, (SELECT Id, Name, Email FROM Contacts WHERE Email = '&quot;, get-property('customer_email'), &quot;') FROM Account WHERE Id IN (SELECT AccountId FROM Contact WHERE Email = '&quot;, get-property('customer_email'), &quot;')&quot;)"/>
@@ -68,4 +75,19 @@
         <target type="body"/>
     </dataServiceCall>
     
+<email.send configKey="GmailConnection">
+    <from >{get-property('file','fromUserName')}</from>
+    <personalName >Nexus Store Support</personalName>
+    <to >{$ctx:customer_email}</to>
+    <cc ></cc>
+    <bcc ></bcc>
+    <replyTo >{get-property('file','fromUserName')}</replyTo>
+    <subject >{$ctx:subject}</subject>
+    <content >{$ctx:content}</content>
+    <contentType >text/html</contentType>
+    <encoding >UTF-8</encoding>
+    <attachments ></attachments>
+    <inlineImages >[]</inlineImages>
+    <contentTransferEncoding >Base64</contentTransferEncoding>
+</email.send>
 </sequence>
