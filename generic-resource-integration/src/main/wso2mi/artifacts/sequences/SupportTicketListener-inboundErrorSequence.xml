@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="SupportTicketListener-inboundErrorSequence" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
+    <log category="ERROR" level="full" description="Error occurred in SupportTicketListener"/>
+    
+    <!-- Log comprehensive error details -->
+    <log category="ERROR" level="custom">
+        <property name="ERROR_CODE" expression="get-property('ERROR_CODE')"/>
+        <property name="ERROR_MESSAGE" expression="get-property('ERROR_MESSAGE')"/>
+        <property name="ERROR_DETAIL" expression="get-property('ERROR_DETAIL')"/>
+        <property name="ERROR_EXCEPTION" expression="get-property('ERROR_EXCEPTION')"/>
+        <property name="HTTP_STATUS_CODE" expression="get-property('axis2', 'HTTP_SC')"/>
+        <property name="FAULT_CODE" expression="get-property('FAULT_CODE')"/>
+    </log>
+    
+    <!-- Log raw response if available for debugging XML parsing issues -->
+    <log category="ERROR" level="custom">
+        <property name="message" value="Raw response body for debugging"/>
+    </log>
+    <log category="ERROR" level="full"/>
+    
+    <!-- Create comprehensive error response -->
+    <payloadFactory media-type="json">
+        <format>
+        {
+            "status": "error",
+            "message": "Failed to process support ticket - Salesforce integration error",
+            "details": {
+                "error_code": "$1",
+                "error_message": "$2",
+                "http_status": "$3",
+                "fault_code": "$4"
+            },
+            "timestamp": "$5",
+            "suggestion": "Check Salesforce authentication credentials and API connectivity"
+        }
+        </format>
+        <args>
+            <arg evaluator="xml" expression="get-property('ERROR_CODE')"/>
+            <arg evaluator="xml" expression="get-property('ERROR_MESSAGE')"/>
+            <arg evaluator="xml" expression="get-property('axis2', 'HTTP_SC')"/>
+            <arg evaluator="xml" expression="get-property('FAULT_CODE')"/>
+            <arg evaluator="xml" expression="get-property('SYSTEM_TIME')"/>
+        </args>
+    </payloadFactory>
+    
+    <!-- Set response content type -->
+    <property name="messageType" value="application/json" scope="axis2"/>
+    <property name="HTTP_SC" value="500" scope="axis2"/>
+    
+    <!-- Drop the message to prevent further processing -->
+    <drop/>
+</sequence>

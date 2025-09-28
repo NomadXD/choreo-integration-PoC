@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<localEntry key="Salesforce" xmlns="http://ws.apache.org/ns/synapse">
+  <salesforcerest.init>
+    <connectionType>INIT</connectionType>
+    <accessToken>{get-property('file','accessToken')}</accessToken>
+    <apiVersion>{get-property('file','apiVersion')}</apiVersion>
+    <hostName>https://login.salesforce.com</hostName>
+    <clientSecret>{get-property('file','clientSecret')}</clientSecret>
+    <clientId>{get-property('file','clientId')}</clientId>
+    <apiUrl>{get-property('file','apiUrl')}</apiUrl>
+    <timeout>3000</timeout>
+    <name>Salesforce</name>
+  </salesforcerest.init>
+</localEntry>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="SupportTicketListener-inboundSequence" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
+    <log category="INFO" level="full" description="Log the event received"/>
+    
+    <!-- Extract customer email from payload -->
+    <property name="customer_email" expression="json-eval($.customer_email)" scope="default" type="STRING"/>
+    
+    <!-- Log extracted email -->
+    <log category="INFO" level="custom">
+        <property name="extracted_email" expression="get-property('customer_email')"/>
+    </log>
+    
+    <!-- Execute Salesforce query with dynamic email -->
+    
+    <salesforcerest.query configKey="Salesforce">
+    <queryString >select id, name from Account</queryString>
+</salesforcerest.query>
+<!-- Log the response -->
+    <log category="INFO" level="full" description="Salesforce query response"/>
+    
+</sequence>
